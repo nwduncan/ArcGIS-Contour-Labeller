@@ -326,7 +326,7 @@ class HeightFieldCombo(object):
 
             # find a field which contains any of the items in the use_field list
             # and assume it to be the contour's height. Edit this list to suit
-            use_field = ['AHD', 'Height']
+            use_field = ['AHD', 'Height', 'Altitude']
             test_for_fields = [ i for e in use_field for i in fields if e in i ]
 
             # if some fields are found use the first result to populate self.value
