@@ -92,6 +92,9 @@ class ContourLayerCombo(object):
 
     """
     Implementation for ContourLabeller.ContourLayerCombo (ComboBox)
+
+    This combobox populates with all polyline layers in the user's
+    data frame. This is where you select your contour lines layer.
     """
 
     def __init__(self):
@@ -146,9 +149,8 @@ class ContourLayerCombo(object):
     # on refresh...
     def refresh(self):
 
-        mxd = arcpy.mapping.MapDocument("CURRENT")
-        layers = arcpy.mapping.ListLayers(mxd)
-        self.items = layers
+        # not currently nessecary
+        pass
 
 
 
@@ -157,6 +159,11 @@ class DrawLabelsTool(object):
 
     """
     Implementation for ContourLabeller.DrawLabelsTool (Tool)
+
+    This tool is used to draw the contour label lines. All resulting
+    points contain the line's angle of rotation as drawn as an attribute
+    in the 'label_rotation' field. This field can be of any data type, so
+    the tool is not limited to just labelling contours.
     """
 
     def __init__(self):
@@ -262,7 +269,7 @@ class DrawLabelsTool(object):
                 first_point = (line.firstPoint.X, line.firstPoint.Y)
                 last_point = (line.lastPoint.X, line.lastPoint.Y)
 
-                # use these to determine the labal rotation value...
+                # use these to determine the label rotation value...
                 angle = getAngle(first_point, last_point)
                 try:
                     # and write the line and rotation to the contour lines layer
@@ -298,6 +305,11 @@ class HeightFieldCombo(object):
 
     """
     Implementation for ContourLabeller.HeightFieldCombo (ComboBox)
+
+    This combobox contains a list of the currently selected layer's fields.
+    It will try to auto-select an approproate field based on the 'use_fields'
+    list variable. If none are found it will leave the default value blank
+    to allow the user to select the appropriate field.
     """
 
     def __init__(self):
@@ -315,13 +327,17 @@ class HeightFieldCombo(object):
 
         self.value = selection
 
+
     # on refresh
     def refresh(self):
 
         # find all the fields within the ContourLayerCombo.layer layer
         # and populate the combobox items
         if ContourLayerCombo.layer != '':
-            fields = [ f.name for f in arcpy.ListFields(ContourLayerCombo.layer) ]
+
+            ignore = ['OBJECTID', 'Shape', 'Shape.STLength()']
+            fields = arcpy.ListFields(ContourLayerCombo.layer)
+            fields = [ f.name for f in fields if f.name not in ignore ]
             self.items = fields
 
             # find a field which contains any of the items in the use_field list
@@ -344,6 +360,13 @@ class CreateLabelsLayer(object):
 
     """
     Implementation for ContourLabeller.CreateLabelsLayer (Button)
+
+    This button compares the drawn label lines against the selected contour
+    layer using the arcpy.Intersect_analysis geoprocessing tool. Empty outputs
+    are currently possible. This should be fixed in later releases though.
+
+    When completed it will clean up the temporary data and save the resulting
+    points layer within the current cractch workspace.
     """
 
     def __init__(self):
@@ -388,17 +411,17 @@ class CreateLabelsLayer(object):
         # contour label locations
         else:
 
-            # selected contour layer and the temporary contour lable lines layer
+            # selected contour layer and the temporary contour label lines layer
             in_layers = [ContourLayerCombo.value, DrawLabelsTool.temp_layer_name]
 
             # creates the new layer in the scratchworkspace
             # resulting layer should be exported to a more permanent
-            # location to avoid lost data
+            # location to avoid data loss
             # -
             # the resulting layer name contains a random string to avoid
             # overwriting when creating multiple label layers
             out_layer = os.path.join(arcpy.env.scratchWorkspace,
-            'Contour_Labels_'+str(DrawLabelsTool.temp_layer_name[:5]))
+                            'Contour_Labels_'+str(DrawLabelsTool.temp_layer_name[:5]))
             intersect_result = arcpy.Intersect_analysis(in_layers, out_layer,
                                 "ALL", "", "POINT")
 
@@ -422,6 +445,12 @@ class ResetLabelLines(object):
 
     """
     Implementation for ContourLabeller.ResetLabelLines (Button)
+
+    This button will delete any current temporary data. It's possible for the
+    user to open a new document while the tool is in use. To circumvent this
+    the tool will check to make sure the temporary layer actually exists
+    before running the remove_temp() function. There's probably a better way
+    around this issue.
     """
 
 
