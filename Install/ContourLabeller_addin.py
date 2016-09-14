@@ -448,5 +448,5 @@ class ResetLabelLines(object):
             arcpy.RefreshActiveView()
 
         # if theres currently some temporary data delete it and refresh
-        elif DrawLabelsTool.temp_layer_status:
+        else:
             remove_temp()
