@@ -1,0 +1,16 @@
+<ESRI.Configuration xmlns="http://schemas.esri.com/Desktop/AddIns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Name>ContourLabeller</Name><AddInID>{8375ad8c-8e5b-44fe-afc0-1c4346394aa7}</AddInID><Description>A very basic contour labelling tool</Description><Version>1.1</Version><Image>Images\contours.png</Image><Author>Nathan Duncan</Author><Company>Nathan Duncan</Company><Date>09/12/2016</Date><Targets><Target name="Desktop" version="10.1" /></Targets><AddIn language="PYTHON" library="ContourLabeller_addin.py" namespace="ContourLabeller_addin"><ArcMap>
+    <Commands>
+        <ComboBox caption="Contour Layer" category="ContourLabeller" class="ContourLayerCombo" id="ContourLabeller.ContourLayerCombo" itemSizeString="WWWWWW" message="" rows="4" sizeString="WWWWWW" tip="Select the contour layer"><Help heading="" /></ComboBox>
+        <ComboBox caption="Height Field" category="ContourLabeller" class="HeightFieldCombo" id="ContourLabeller.HeightFieldCombo" itemSizeString="WWWWWW" message="" rows="4" sizeString="WWWWWW" tip="Select the field which contains the contours height data"><Help heading="" /></ComboBox>
+        <Tool caption="Draw Labels" category="ContourLabeller" class="DrawLabelsTool" id="ContourLabeller.DrawLabelsTool" image="Images\tool.gif" message="" tip="Draw the start and end points to create labels between. Double-click to finish line."><Help heading="" /></Tool>
+        <Button caption="Create Labels Layer" category="ContourLabeller" class="CreateLabelsLayer" id="ContourLabeller.CreateLabelsLayer" image="Images\tick.png" message="" tip="Build a temporary feature layer containing your contour labels"><Help heading="" /></Button>
+        <Button caption="Reset Label Lines" category="ContourLabeller" class="ResetLabelLines" id="ContourLabeller.ResetLabelLines" image="Images\delete.png" message="" tip="Reset all drawn label lines"><Help heading="" /></Button>
+        </Commands>
+    <Extensions>
+        </Extensions>
+    <Toolbars>
+        <Toolbar caption="Contour Labeller" category="ContourLabeller" id="ContourLabeller.toolbar" showInitially="true"><Items><ComboBox refID="ContourLabeller.ContourLayerCombo" /><ComboBox refID="ContourLabeller.HeightFieldCombo" /><Tool refID="ContourLabeller.DrawLabelsTool" /><Button refID="ContourLabeller.CreateLabelsLayer" /><Button refID="ContourLabeller.ResetLabelLines" /></Items></Toolbar>
+        </Toolbars>
+    <Menus>
+        </Menus>
+    </ArcMap></AddIn></ESRI.Configuration>
